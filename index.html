@@ -1,0 +1,41 @@
+<html>
+        <head>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+        </head>
+        <body>
+            <center>
+                <img src="still.png"/>
+
+                <script>
+                    $(document).ready(function() {
+                
+            
+            
+                    $("img").on("click", function(event) {
+                        var width = this.clientWidth;
+                        var x = event.pageX - this.offsetLeft;
+                        //Right
+                        if(x  > width/2){
+                            this.src = "rechts.gif";
+                            var a = new Audio("https://dl.dropboxusercontent.com/s/9k0v1xy7n9jih1o/ekki.mp3?dl=0");
+                            a.play();
+                            var img = this;
+                            a.addEventListener('ended', function() {
+                            img.src = "still.png";
+                        });
+                        //Left 
+                        }else{
+                            this.src = "links.gif";
+                            var a2 = new Audio("https://dl.dropboxusercontent.com/s/eu1qhkzz5pnngia/siggi.mp3?dl=0");
+                            a2.play();
+                            var img = this;
+                            a2.addEventListener('ended', function() {
+                            img.src = "still.png";
+                    });
+                    }
+                });
+            });
+                </script>
+            </center>
+    </body>
+</html>
