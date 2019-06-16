@@ -1,41 +1,62 @@
 <html>
         <head>
+                <link rel="stylesheet" type="text/css" href="style.css">
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
         </head>
         <body>
             <center>
-                <img src="still.png"/>
-
-                <script>
-                    $(document).ready(function() {
-                
-            
-            
-                    $("img").on("click", function(event) {
-                        var width = this.clientWidth;
-                        var x = event.pageX - this.offsetLeft;
-                        //Right
-                        if(x  > width/2){
-                            this.src = "rechts.gif";
-                            var a = new Audio("https://dl.dropboxusercontent.com/s/9k0v1xy7n9jih1o/ekki.mp3?dl=0");
-                            a.play();
-                            var img = this;
-                            a.addEventListener('ended', function() {
-                            img.src = "still.png";
-                        });
-                        //Left 
-                        }else{
-                            this.src = "links.gif";
-                            var a2 = new Audio("https://dl.dropboxusercontent.com/s/eu1qhkzz5pnngia/siggi.mp3?dl=0");
-                            a2.play();
-                            var img = this;
-                            a2.addEventListener('ended', function() {
-                            img.src = "still.png";
-                    });
-                    }
-                });
-            });
-                </script>
+                <img src="still.gif" />
+                <div class="slidecontainer"  >
+                    <h1 class="lowvolume">🔈</h1>
+                    <input type="range" min="1" max="100" value="50" class="slider" id="slider">
+                    <h1 class="highvolume">🔊</h1>
+                  </div>
+                <h1 class="suggestions">Themen Vorschläge? <br>  <a href="mailto:dieprangerer@gmx.de"> dieprangerer@gmx.de</a></h1>
             </center>
     </body>
+    <footer id="footer">
+            <center>
+                    <a href="datenschutzerklärung.html"> Datenschutz</a>
+                <a href="impressum.html"> Impressum</a>
+            </center>
+    </footer>
+    <script>
+        $(document).ready(function() {
+            var rightAudio = new Audio("https://dl.dropboxusercontent.com/s/x6s441h3fy6fl7d/Siggi.mp3?dl=0");
+            var leftAudio = new Audio("https://dl.dropboxusercontent.com/s/aj1b7khn9khkok9/Ecki.mp3?dl=0");
+            
+            rightAudio.volume = $("#slider").attr("value")/100
+            leftAudio.volume = $("#slider").attr("value")/100
+
+            rightAudio.addEventListener('ended', function() {
+                $("img").attr("src","still.gif");
+            });
+            leftAudio.addEventListener('ended', function() {
+                $("img").attr("src","still.gif");
+            });
+            $("#slider").on("input", function(event){
+                rightAudio.volume = this.value/100;
+                leftAudio.volume =  this.value/100;
+            })
+
+            $("img").on("click", function(event) {
+                var width = this.clientWidth;
+                var x = event.pageX - this.offsetLeft;
+                
+                //Right
+                if(x  > width/2){
+                    this.src = "rechts.gif";
+                    leftAudio.pause();
+                    leftAudio.currentTime = 0;
+                    rightAudio.play();
+                //Left 
+                }else{
+                    rightAudio.pause();
+                    rightAudio.currentTime = 0;      
+                    this.src = "links.gif";
+                    leftAudio.play(); 
+                }
+            });
+        });
+    </script>
 </html>
