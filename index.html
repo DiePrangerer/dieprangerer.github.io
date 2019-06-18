@@ -4,21 +4,25 @@
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
         </head>
         <body>
-            <center>
-                <img src="still.gif" />
-                <div class="slidecontainer"  >
-                    <h1 class="lowvolume">🔈</h1>
-                    <input type="range" min="1" max="100" value="50" class="slider" id="slider">
-                    <h1 class="highvolume">🔊</h1>
-                  </div>
-                <h1 class="suggestions">Themen Vorschläge? <br>  <a href="mailto:dieprangerer@gmx.de"> dieprangerer@gmx.de</a></h1>
-            </center>
-            <footer id="footer">
-                <center>
-                        <a href="datenschutzerklärung.html"> Datenschutz</a>
-                    <a href="impressum.html"> Impressum</a>
-                </center>
-        </footer>
+            <div id="page-container">
+                <div id="content-wrap">
+                    <center>
+                        <img src="still.gif" />
+                        <div class="slidecontainer"  >
+                            <h1 class="lowvolume">🔈</h1>
+                            <input type="range" min="1" max="100" value="50" class="slider" id="slider">
+                            <h1 class="highvolume">🔊</h1>
+                        </div>
+                        <h1 class="suggestions">Themen Vorschläge? <br>  <a href="mailto:dieprangerer@gmx.de"> dieprangerer@gmx.de</a></h1>
+                    </center>
+                </div>
+                <footer id="footer">
+                    <center>
+                            <a href="datenschutzerklärung.html"> Datenschutz</a>
+                        <a href="impressum.html"> Impressum</a>
+                    </center>
+                </footer>
+        </div>
     </body>
     <script>
         $(document).ready(function() {
