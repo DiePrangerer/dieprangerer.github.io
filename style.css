@@ -12,7 +12,7 @@ footer{
 
 #page-container{
   position: relative;
-  min-height: 100vh;
+  min-height: 97vh;
 }
 
 #content-wrap{
@@ -21,10 +21,27 @@ footer{
 
 .suggestions{
   color: #221e20;
-  font-size: 300%; 
+  font-size: 4vh
 }
 
+.mainimage{
+  max-width:100%;
+  height: auto;
+  background:red;
+}
 
+.mainimagewrapper{
+  width:90vw;
+  height:50vh;
+  background:yellow;
+  display:table-cell;
+  vertical-align:middle;
+  text-align:center;
+}
+
+.footertext{
+  font-size: 1.5vh;
+}
 
 .slidecontainer{
   display: flex;
@@ -34,9 +51,8 @@ footer{
 
 .slider {
   -webkit-appearance: none;
-  width: 20%;
+  width: 20vw;
   height: 15px;
-  max-width: 500px;
   border-radius: 5px;   
   background: #d3d3d3;
   outline: none;

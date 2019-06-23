@@ -7,7 +7,9 @@
             <div id="page-container">
                 <div id="content-wrap">
                     <center>
-                        <img src="still.gif" />
+                        <div class="mainimagewrapper">
+                            <img class="mainimage" src="still.gif" />
+                    </div>
                         <div class="slidecontainer"  >
                             <h1 class="lowvolume">🔈</h1>
                             <input type="range" min="1" max="100" value="50" class="slider" id="slider">
@@ -18,8 +20,8 @@
                 </div>
                 <footer id="footer">
                     <center>
-                            <a href="datenschutzerklärung.html"> Datenschutz</a>
-                        <a href="impressum.html"> Impressum</a>
+                        <a class="footertext" href="datenschutzerklärung.html">Datenschutz<a/>
+                        <a class="footertext" href="impressum.html"> Impressum</a>
                     </center>
                 </footer>
         </div>
@@ -28,9 +30,11 @@
         $(document).ready(function() {
             var rightAudio = new Audio("https://dl.dropboxusercontent.com/s/x6s441h3fy6fl7d/Siggi.mp3?dl=0");
             var leftAudio = new Audio("https://dl.dropboxusercontent.com/s/aj1b7khn9khkok9/Ecki.mp3?dl=0");
-            
-            rightAudio.volume = $("#slider").attr("value")/100
-            leftAudio.volume = $("#slider").attr("value")/100
+            rightAudio.preload = "auto";
+            leftAudio.preload = "auto";
+
+            rightAudio.volume = $("#slider").attr("value")/100;
+            leftAudio.volume = $("#slider").attr("value")/100;
 
             rightAudio.addEventListener('ended', function() {
                 $("img").attr("src","still.gif");
