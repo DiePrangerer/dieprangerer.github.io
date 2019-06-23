@@ -27,13 +27,11 @@ footer{
 .mainimage{
   max-width:100%;
   height: auto;
-  background:red;
 }
 
 .mainimagewrapper{
   width:90vw;
   height:50vh;
-  background:yellow;
   display:table-cell;
   vertical-align:middle;
   text-align:center;

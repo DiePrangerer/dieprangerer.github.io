@@ -1,14 +1,16 @@
+<!DOCTYPE html>
 <html>
         <head>
                 <link rel="stylesheet" type="text/css" href="style.css">
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+                <title>Die Prangerer</title>
         </head>
         <body>
             <div id="page-container">
                 <div id="content-wrap">
                     <center>
                         <div class="mainimagewrapper">
-                            <img class="mainimage" src="still.gif" />
+                            <img class="mainimage" src="assets/still.gif" />
                     </div>
                         <div class="slidecontainer"  >
                             <h1 class="lowvolume">🔈</h1>
@@ -30,6 +32,12 @@
         $(document).ready(function() {
             var rightAudio = new Audio("https://dl.dropboxusercontent.com/s/x6s441h3fy6fl7d/Siggi.mp3?dl=0");
             var leftAudio = new Audio("https://dl.dropboxusercontent.com/s/aj1b7khn9khkok9/Ecki.mp3?dl=0");
+            var preloadGif = new Image();
+            preloadGif.src = "assets/links.gif";
+            var preloadGif2 = new Image();
+            preloadGif2.src = "assets/rechts.gif";
+       
+
             rightAudio.preload = "auto";
             leftAudio.preload = "auto";
 
@@ -37,10 +45,10 @@
             leftAudio.volume = $("#slider").attr("value")/100;
 
             rightAudio.addEventListener('ended', function() {
-                $("img").attr("src","still.gif");
+                $("img").attr("src","assets/still.gif");
             });
             leftAudio.addEventListener('ended', function() {
-                $("img").attr("src","still.gif");
+                $("img").attr("src","assets/still.gif");
             });
             $("#slider").on("input", function(event){
                 rightAudio.volume = this.value/100;
@@ -53,7 +61,7 @@
                 
                 //Right
                 if(x  > width/2){
-                    this.src = "rechts.gif";
+                    this.src = "assets/rechts.gif";
                     leftAudio.pause();
                     leftAudio.currentTime = 0;
                     rightAudio.play();
@@ -61,7 +69,7 @@
                 }else{
                     rightAudio.pause();
                     rightAudio.currentTime = 0;      
-                    this.src = "links.gif";
+                    this.src = "assets/links.gif";
                     leftAudio.play(); 
                 }
             });
