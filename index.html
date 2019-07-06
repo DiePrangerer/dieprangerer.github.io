@@ -1,78 +1,127 @@
 <!DOCTYPE html>
 <html>
-        <head>
-                <link rel="stylesheet" type="text/css" href="style.css">
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-                <title>Die Prangerer</title>
-        </head>
-        <body>
-            <div id="page-container">
-                <div id="content-wrap">
-                    <center>
-                        <div class="mainimagewrapper">
-                            <img class="mainimage" src="assets/still.gif" />
-                    </div>
-                        <div class="slidecontainer"  >
-                            <h1 class="lowvolume">🔈</h1>
-                            <input type="range" min="1" max="100" value="50" class="slider" id="slider">
-                            <h1 class="highvolume">🔊</h1>
-                        </div>
-                        <h1 class="suggestions">Themen Vorschläge? <br>  <a href="mailto:dieprangerer@gmx.de"> dieprangerer@gmx.de</a></h1>
-                    </center>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta property="og:image" content="assets/still.gif" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <title>Die Prangerer</title>
+</head>
+
+<body>
+    <div id="page-container">
+        <div id="content-wrap">
+            <center>
+                <div class="mainimagewrapper">
+                    <img class="mainimage" src="assets/still.gif" />
                 </div>
-                <footer id="footer">
-                    <center>
-                        <a class="footertext" href="datenschutzerklärung.html">Datenschutz<a/>
-                        <a class="footertext" href="impressum.html"> Impressum</a>
-                    </center>
-                </footer>
+                <div class="slidecontainer">
+                    <h1 class="lowvolume">🔈</h1>
+                    <input type="range" min="1" max="100" value="50" class="slider" id="slider">
+                    <h1 class="highvolume">🔊</h1>
+                </div>
+                <h1 class="suggestions">Themen Vorschläge? <br> <a href="mailto:dieprangerer@gmx.de">
+                        dieprangerer@gmx.de</a></h1>
+            </center>
         </div>
-    </body>
-    <script>
-        $(document).ready(function() {
-            var rightAudio = new Audio("https://dl.dropboxusercontent.com/s/x6s441h3fy6fl7d/Siggi.mp3?dl=0");
-            var leftAudio = new Audio("https://dl.dropboxusercontent.com/s/aj1b7khn9khkok9/Ecki.mp3?dl=0");
-            var preloadGif = new Image();
-            preloadGif.src = "assets/links.gif";
-            var preloadGif2 = new Image();
-            preloadGif2.src = "assets/rechts.gif";
-       
+        <button id=test>TEST</button>
+        <footer id="footer">
+            <center>
+                <a class="footertext" href="datenschutzerklärung.html">Datenschutz<a />
+                    <a class="footertext" href="impressum.html"> Impressum</a>
+            </center>
+        </footer>
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        const ctx = new(window.AudioContext || window.webkitAudioContext)();
+        var canPlayCounter = 0;
 
-            rightAudio.preload = "auto";
-            leftAudio.preload = "auto";
+        function appendBuffers(buffers) {
+            var length = 0;
+            for (let buffer of buffers) {
+                length += buffer.length;
+            }
+            var tmp = ctx.createBuffer(1, length, buffers[0].sampleRate);
+            var curTime = 0;
+            var channel = tmp.getChannelData(0);
+            for (let buffer of buffers) {
+                if (buffer.duration > 1) {
+                    channel.set(buffer.getChannelData(0), curTime);
+                    curTime += buffer.length;
+                }
+            }
+            return tmp;
+        }
 
-            rightAudio.volume = $("#slider").attr("value")/100;
-            leftAudio.volume = $("#slider").attr("value")/100;
+        function fetchBuffers(urls) {
+            return Promise.all(urls.map(url => fetch(url)
+                .then(r => r.arrayBuffer())
+                .then(buf => ctx.decodeAudioData(buf))
+            ));
+        }
 
-            rightAudio.addEventListener('ended', function() {
-                $("img").attr("src","assets/still.gif");
-            });
-            leftAudio.addEventListener('ended', function() {
-                $("img").attr("src","assets/still.gif");
-            });
-            $("#slider").on("input", function(event){
-                rightAudio.volume = this.value/100;
-                leftAudio.volume =  this.value/100;
-            })
+        var eckiUrls = ["aexth6j120fuw5j/Ecki1.mp3?dl=0",
+            "ajufz82lexsuxwe/Ecki2.mp3?dl=0",
+            "39pygmpmg05fj2g/Ecki3.mp3?dl=0",
+            "znoqkwanmc9rsh9/Ecki4.mp3?dl=0",
+            "x040zm2912yg48k/Ecki5.mp3?dl=0"
+        ];
+        var siggiUrls = ["x6s441h3fy6fl7d/Siggi1.mp3?dl=0",
+            "h5ts4eyotgbfu6d/Siggi2.mp3?dl=0",
+            "j2n4d7nsm2gu9vi/Siggi3.mp3?dl=0",
+            "z9c8pl4o967lxt3/Siggi4.mp3?dl=0",
+            "uw1orqxj1m0uywe/Siggi5.mp3?dl=0"
+        ]
+        var urls = [];
+        for (let i = 0; i < eckiUrls.length; i++) {
+            urls.push("https://dl.dropboxusercontent.com/s/" + eckiUrls[i],
+                "https://dl.dropboxusercontent.com/s/" + siggiUrls[i]);
+        }
+        fetchBuffers(urls).then((buffers) => {
+            let finalBuffer = appendBuffers(buffers);
+            let gainNode = ctx.createGain();
+            var alreadyPlaying = false;
 
-            $("img").on("click", function(event) {
-                var width = this.clientWidth;
-                var x = event.pageX - this.offsetLeft;
-                
-                //Right
-                if(x  > width/2){
-                    this.src = "assets/rechts.gif";
-                    leftAudio.pause();
-                    leftAudio.currentTime = 0;
-                    rightAudio.play();
-                //Left 
-                }else{
-                    rightAudio.pause();
-                    rightAudio.currentTime = 0;      
-                    this.src = "assets/links.gif";
-                    leftAudio.play(); 
+
+            $("img").on("click", function (event) {
+                if (!alreadyPlaying) {
+                    alreadyPlaying = true;
+                    let source = ctx.createBufferSource();
+                    source.buffer = finalBuffer;
+                    source.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+                    source.start();
+                    let atTime = 0
+                    var ecki = true;
+                    for (let buffer of buffers) {
+                        if (ecki) {
+                            setTimeout(function () {
+                                $("img").attr("src", "assets/links.gif");
+                            }, atTime);
+                        } else {
+                            setTimeout(function () {
+                                $("img").attr("src", "assets/rechts.gif");
+                            }, atTime);
+                        }
+
+                        atTime += buffer.duration * 1000;
+                        ecki = !ecki;
+                    }
+                    setTimeout(function () {
+                                $("img").attr("src", "assets/still.gif");
+                                alreadyPlaying = false;
+                            }, atTime);
                 }
             });
+
+            $("#slider").on("input", function (event) {
+                gainNode.gain.setValueAtTime(2 * (this.value / 100), ctx.currentTime);
+
+            });
         });
-    </script>
+    });
+</script>
+
 </html>
