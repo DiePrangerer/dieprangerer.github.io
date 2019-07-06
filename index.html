@@ -46,13 +46,16 @@
             var tmp = ctx.createBuffer(1, length, buffers[0].sampleRate);
             var curTime = 0;
             var channel = tmp.getChannelData(0);
+            let usedBuffers = [];
             for (let buffer of buffers) {
                 if (buffer.duration > 1) {
+                    usedBuffers.push(buffer);
                     channel.set(buffer.getChannelData(0), curTime);
                     curTime += buffer.length;
                 }
+
             }
-            return tmp;
+            return [usedBuffers, tmp];
         }
 
         function fetchBuffers(urls) {
@@ -80,7 +83,8 @@
                 "https://dl.dropboxusercontent.com/s/" + siggiUrls[i]);
         }
         fetchBuffers(urls).then((buffers) => {
-            let finalBuffer = appendBuffers(buffers);
+            let finalBuffer = "";
+            [buffers, finalBuffer] = appendBuffers(buffers);
             let gainNode = ctx.createGain();
             var alreadyPlaying = false;
 
