@@ -76,17 +76,19 @@
 
         function loadedAudio(event) {
             loaded++;
-            if (event.path[0].duration < 1.5) {
-                try {
+
+            try {
+                console.log(event);
+                if (event.path[0].duration < 1.5) {
+                    var index = urls.indexOf(event.path[0].src);
                     if (index !== -1) {
-                    urls.splice(index, 1);
+                        urls.splice(index, 1);
+                    }
                 }
-                } catch (err) {
-                    console.log(err)
-                }
-                var index = urls.indexOf(event.path[0].src);
-             
+            } catch (err) {
+                console.log(err);
             }
+
 
             if (loaded == numUrls) {
                 $(".loader").hide();
