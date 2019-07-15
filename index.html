@@ -77,7 +77,8 @@
         function loadedAudio(event) {
             loaded++;
             if (event.path[0].duration < 1.5) {
-                urls = urls.filter(e => e !== event.path[0].src)
+                var index = urls.indexOf(event.path[0].src);
+                if (index !== -1) {urls.splice(index, 1);}
             }
 
             if (loaded == numUrls) {
@@ -124,7 +125,7 @@
 
                 }
 
-                if (i >= urls.length) {
+                if (i == urls.length) {
                     $("img").attr("src", "assets/still.gif");
                     return;
                 }
