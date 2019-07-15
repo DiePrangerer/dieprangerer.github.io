@@ -32,6 +32,7 @@
                     <img class="mainimage" src="assets/still.gif" />
                     <audio id="player"></audio>
                     <div class="loader"></div>
+                    <h1 id="test"></h1>
                 </div>
                 <div class="slidecontainer">
                     <h1 class="lowvolume">🔈</h1>
@@ -74,6 +75,8 @@
         var loaded = 0;
         function loadedAudio(event) {
             loaded++;
+            
+            $("#test").text(loaded);
             if(event.path[0].duration < 1.5){
                 urls = urls.filter(e => e !== event.path[0].src)
             }
