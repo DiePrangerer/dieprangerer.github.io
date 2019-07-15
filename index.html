@@ -32,7 +32,6 @@
                     <img class="mainimage" src="assets/still.gif" />
                     <audio id="player"></audio>
                     <div class="loader"></div>
-                    <h1 id="test"></h1>
                 </div>
                 <div class="slidecontainer">
                     <h1 class="lowvolume">🔈</h1>
@@ -67,20 +66,19 @@
             "uw1orqxj1m0uywe/Siggi5.mp3?dl=0"
         ]
         var urls = [];
-        var numUrls = 10; 
+        var numUrls = 10;
         for (let i = 0; i < eckiUrls.length; i++) {
             urls.push("https://dl.dropboxusercontent.com/s/" + eckiUrls[i],
                 "https://dl.dropboxusercontent.com/s/" + siggiUrls[i]);
         }
         var loaded = 0;
+
         function loadedAudio(event) {
             loaded++;
-            
-            $("#test").text(loaded);
-            if(event.path[0].duration < 1.5){
+            if (event.path[0].duration < 1.5) {
                 urls = urls.filter(e => e !== event.path[0].src)
             }
-            
+
             if (loaded == numUrls) {
                 $(".loader").hide();
                 init();
@@ -90,19 +88,24 @@
         function preloadsounds() {
             for (var i in urls) {
                 var audio = new Audio();
-                audio.addEventListener('canplay', loadedAudio, false); //canplaythrough
+                audio.addEventListener('canplaythrough', loadedAudio, false); //canplaythrough
                 audio.src = urls[i];
                 audio.load();
             }
         }
-        setTimeout(function(){  preloadsounds(); }, 3000);
+        if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+            $(".loader").hide();
+            init();
+        } else {
+            preloadsounds();
+        }
 
 
-       
         function play(index) {
             player.src = urls[index];
             player.play();
         }
+
         function init() {
             $("img").on("click", function (event) {
                 var player = $('#player')[0];
@@ -121,7 +124,7 @@
                         return;
                     }
                     play(i);
-                },false);
+                }, false);
 
                 $("img").attr("src", "assets/links.gif");
                 play(i);
@@ -129,7 +132,7 @@
         }
 
         $("#slider").on("input", function (event) {
-         
+
             $("#player")[0].volume = (this.value / 100);
 
         });
