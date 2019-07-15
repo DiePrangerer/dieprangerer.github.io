@@ -95,8 +95,10 @@
                 audio.load();
             }
         }
+        setTimeout(function(){  preloadsounds(); }, 3000);
 
-        preloadsounds();
+
+       
         function play(index) {
             player.src = urls[index];
             player.play();
