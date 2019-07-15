@@ -90,7 +90,7 @@
         function preloadsounds() {
             for (var i in urls) {
                 var audio = new Audio();
-                audio.addEventListener('canplaythrough', loadedAudio, false);
+                audio.addEventListener('canplay', loadedAudio, false); //canplaythrough
                 audio.src = urls[i];
                 audio.load();
             }
