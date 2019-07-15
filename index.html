@@ -12,8 +12,13 @@
     <meta name="theme-color" content="#ffffff">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <link rel="preload" as="image" href="assets/rechts.gif">
+    <link rel="preload" as="image" href="assets/links.gif">
+
+
     <title>Die Prangerer</title>
-    <meta property="og:url" content="https://dieprangerer.github.io/"/>
+    <meta property="og:url" content="https://dieprangerer.github.io/" />
     <meta property="og:image" content="https://dieprangerer.github.io/assets/still.gif" />
     <meta property="og:type" content="article" />
     <meta property="og:locale" content="de_DE" />
@@ -25,6 +30,8 @@
             <center>
                 <div class="mainimagewrapper">
                     <img class="mainimage" src="assets/still.gif" />
+                    <audio id="player"></audio>
+                    <div class="loader"></div>
                 </div>
                 <div class="slidecontainer">
                     <h1 class="lowvolume">🔈</h1>
@@ -45,35 +52,6 @@
 </body>
 <script>
     $(document).ready(function () {
-        const ctx = new(window.AudioContext || window.webkitAudioContext)();
-        var canPlayCounter = 0;
-
-        function appendBuffers(buffers) {
-            var length = 0;
-            for (let buffer of buffers) {
-                length += buffer.length;
-            }
-            var tmp = ctx.createBuffer(1, length, buffers[0].sampleRate);
-            var curTime = 0;
-            var channel = tmp.getChannelData(0);
-            let usedBuffers = [];
-            for (let buffer of buffers) {
-                if (buffer.duration > 1) {
-                    usedBuffers.push(buffer);
-                    channel.set(buffer.getChannelData(0), curTime);
-                    curTime += buffer.length;
-                }
-
-            }
-            return [usedBuffers, tmp];
-        }
-
-        function fetchBuffers(urls) {
-            return Promise.all(urls.map(url => fetch(url)
-                .then(r => r.arrayBuffer())
-                .then(buf => ctx.decodeAudioData(buf))
-            ));
-        }
 
         var eckiUrls = ["r4kparq4y26922s/Ecki1.mp3?dl=0",
             "ajufz82lexsuxwe/Ecki2.mp3?dl=0",
@@ -88,52 +66,66 @@
             "uw1orqxj1m0uywe/Siggi5.mp3?dl=0"
         ]
         var urls = [];
+        var numUrls = 10; 
         for (let i = 0; i < eckiUrls.length; i++) {
             urls.push("https://dl.dropboxusercontent.com/s/" + eckiUrls[i],
                 "https://dl.dropboxusercontent.com/s/" + siggiUrls[i]);
         }
-        fetchBuffers(urls).then((buffers) => {
-            let finalBuffer = "";
-            [buffers, finalBuffer] = appendBuffers(buffers);
-            let gainNode = ctx.createGain();
-            var alreadyPlaying = false;
+        var loaded = 0;
+        function loadedAudio(event) {
+            loaded++;
+            if(event.path[0].duration < 1.5){
+                urls = urls.filter(e => e !== event.path[0].src)
+            }
+            
+            if (loaded == numUrls) {
+                $(".loader").hide();
+                init();
+            }
+        }
 
+        function preloadsounds() {
+            for (var i in urls) {
+                var audio = new Audio();
+                audio.addEventListener('canplaythrough', loadedAudio, false);
+                audio.src = urls[i];
+                audio.load();
+            }
+        }
 
+        preloadsounds();
+        function play(index) {
+            player.src = urls[index];
+            player.play();
+        }
+        function init() {
             $("img").on("click", function (event) {
-                if (!alreadyPlaying) {
-                    alreadyPlaying = true;
-                    let source = ctx.createBufferSource();
-                    source.buffer = finalBuffer;
-                    source.connect(gainNode);
-                    gainNode.connect(ctx.destination);
-                    source.start();
-                    let atTime = 0
-                    var ecki = true;
-                    for (let buffer of buffers) {
-                        if (ecki) {
-                            setTimeout(function () {
-                                $("img").attr("src", "assets/links.gif");
-                            }, atTime);
-                        } else {
-                            setTimeout(function () {
-                                $("img").attr("src", "assets/rechts.gif");
-                            }, atTime);
-                        }
+                var player = $('#player')[0];
+                var i = 0;
+                player.addEventListener('ended', function () {
+                    i++;
+                    if (i % 2 == 0) {
+                        $("img").attr("src", "assets/links.gif");
+                    } else {
+                        $("img").attr("src", "assets/rechts.gif");
 
-                        atTime += buffer.duration * 1000;
-                        ecki = !ecki;
                     }
-                    setTimeout(function () {
-                                $("img").attr("src", "assets/still.gif");
-                                alreadyPlaying = false;
-                            }, atTime);
-                }
-            });
 
-            $("#slider").on("input", function (event) {
-                gainNode.gain.setValueAtTime(2 * (this.value / 100), ctx.currentTime);
+                    if (i >= urls.length) {
+                        $("img").attr("src", "assets/still.gif");
+                        return;
+                    }
+                    play(i);
+                },false);
 
+                $("img").attr("src", "assets/links.gif");
+                play(i);
             });
+        }
+
+        $("#slider").on("input", function (event) {
+            $("player").volume = (2 * (this.value / 100));
+
         });
     });
 </script>
