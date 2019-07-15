@@ -88,54 +88,57 @@
         function preloadsounds() {
             for (var i in urls) {
                 var audio = new Audio();
-                audio.addEventListener('canplaythrough', loadedAudio, false); //canplaythrough
+                audio.addEventListener('canplaythrough', loadedAudio, false); 
                 audio.src = urls[i];
                 audio.load();
             }
         }
-        if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-            $(".loader").hide();
-            init();
-        } else {
-            preloadsounds();
-        }
+        preloadsounds();
+        setTimeout(function () {
+            if (loaded == 0) {
+                $(".loader").hide();
+                init();
+            }
+        }, 2000)
+
+ 
 
 
-        function play(index) {
-            player.src = urls[index];
-            player.play();
-        }
+    function play(index) {
+        player.src = urls[index];
+        player.play();
+    }
 
-        function init() {
-            $("img").on("click", function (event) {
-                var player = $('#player')[0];
-                var i = 0;
-                player.addEventListener('ended', function () {
-                    i++;
-                    if (i % 2 == 0) {
-                        $("img").attr("src", "assets/links.gif");
-                    } else {
-                        $("img").attr("src", "assets/rechts.gif");
+    function init() {
+        $("img").on("click", function (event) {
+            var player = $('#player')[0];
+            var i = 0;
+            player.addEventListener('ended', function () {
+                i++;
+                if (i % 2 == 0) {
+                    $("img").attr("src", "assets/links.gif");
+                } else {
+                    $("img").attr("src", "assets/rechts.gif");
 
-                    }
+                }
 
-                    if (i >= urls.length) {
-                        $("img").attr("src", "assets/still.gif");
-                        return;
-                    }
-                    play(i);
-                }, false);
-
-                $("img").attr("src", "assets/links.gif");
+                if (i >= urls.length) {
+                    $("img").attr("src", "assets/still.gif");
+                    return;
+                }
                 play(i);
-            });
-        }
+            }, false);
 
-        $("#slider").on("input", function (event) {
-
-            $("#player")[0].volume = (this.value / 100);
-
+            $("img").attr("src", "assets/links.gif");
+            play(i);
         });
+    }
+
+    $("#slider").on("input", function (event) {
+
+        $("#player")[0].volume = (this.value / 100);
+
+    });
     });
 </script>
 
