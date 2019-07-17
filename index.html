@@ -79,12 +79,13 @@
                 if (event.target && event.target.duration < 1.5) {
                     var index = urls.indexOf(event.target.src);
                     if (index !== -1) {
-                        urls.splice(index, 1);
+                        urls[index] = "null";
                     }
                 } else if (event.path && event.path[0].duration < 1.5) {
                     var index = urls.indexOf(event.path[0].src);
                     if (index !== -1) {
-                        urls.splice(index, 1);
+                        //urls.splice(index, 1);
+                        urls[index] = "null";
                     }
                 }
             } catch (err) {
@@ -121,12 +122,10 @@
             player.src = urls[index];
             player.play();
         }
-
+        var i = 0;
         function init() {
-            $("img").on("click", function (event) {
-                var player = $('#player')[0];
-                var i = 0;
-                player.addEventListener('ended', function () {
+            var player = $('#player')[0];
+            function playNextAudio(){  
                     i++;
                     if (i % 2 == 0) {
                         $("img").attr("src", "assets/links.gif");
@@ -139,11 +138,27 @@
                         $("img").attr("src", "assets/still.gif");
                         return;
                     }
-                    play(i);
+                    if(urls[i] != "null"){
+                        play(i);
+                    }else{
+                        playNextAudio();
+                    }
+            }
+
+            $("img").on("click", function (event) {
+                var player = $('#player')[0];
+                var i = 0;
+                player.addEventListener('ended', function () {
+                    playNextAudio();
                 }, false);
 
                 $("img").attr("src", "assets/links.gif");
-                play(i);
+                if(urls[0] != "null"){
+                        console.log(urls[0])
+                        play(i);
+                    }else{
+                        playNextAudio();
+                    }
             });
         }
 
